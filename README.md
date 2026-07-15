@@ -183,6 +183,9 @@
 
 `При необходимости прикрепитe сюда скриншоты
 ![Название скриншота](ссылка на скриншот)`
+![task5](https://github.com/tsitovich/7-1-ansible-hw/blob/main/img/task5.png)
+![task5-1](https://github.com/tsitovich/7-1-ansible-hw/blob/main/img/task5_1.png)
+
 
 ### Задание 4
 
