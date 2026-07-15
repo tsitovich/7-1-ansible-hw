@@ -1,0 +1,65 @@
+---
+- name: Install Apache web server
+  ansible.builtin.package:
+    name: apache2
+    state: present
+
+- name: Ensure target directories exist
+  ansible.builtin.file:
+    path: /var/www/html
+    state: directory
+    mode: '0755'
+
+# Удаляем стандартную страницу-заглушку Ubuntu, если она там есть
+- name: Remove default Ubuntu index.html if exists
+  ansible.builtin.file:
+    path: /var/www/html/index.html
+    state: absent
+
+- name: Configure custom index.html from Jinja2 template
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    mode: '0644'
+
+- name: Copy default Apache virtualhost configuration
+  ansible.builtin.template:
+    src: 000-default.conf.j2
+    dest: /etc/apache2/sites-available/000-default.conf
+    mode: '0644'
+
+# Отключаем возможные конфликтующие конфигурации по умолчанию
+- name: Disable default conf security blocks if causing issues
+  ansible.builtin.command: a2disconf security
+  register: a2disconf_result
+  failed_when: false
+  changed_when: "'already disabled' not in a2disconf_result.stderr"
+
+- name: Ensure Apache default site is enabled
+  ansible.builtin.command: a2ensite 000-default
+  register: a2ensite_result
+  changed_when: "'already enabled' not in a2ensite_result.stdout"
+
+- name: Allow HTTP traffic (open port 80 if UFW firewall is active)
+  community.general.ufw:
+    rule: allow
+    port: '80'
+    proto: tcp
+  ignore_errors: true
+
+- name: Ensure Apache is running and enabled on boot
+  ansible.builtin.service:
+    name: apache2
+    state: started
+    enabled: true
+
+- name: Force restart Apache to flush cache and apply configurations
+  ansible.builtin.service:
+    name: apache2
+    state: restarted
+
+- name: Verify website returns HTTP 200
+  ansible.builtin.uri:
+    url: "http://localhost/index.html" # Изменили внешний IP на localhost
+    status_code: 200
+

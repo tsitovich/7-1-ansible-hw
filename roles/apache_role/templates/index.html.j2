@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Host Info - {{ ansible_facts['hostname'] }}</title>
+</head>
+<body>
+    <h1>System Characteristics</h1>
+    <ul>
+        <li><strong>IP Address:</strong> {{ ansible_facts['default_ipv4']['address'] }}</li>
+        <li><strong>CPU vCPUs:</strong> {{ ansible_facts['processor_vcpus'] }}</li>
+        <li><strong>RAM Total:</strong> {{ ansible_facts['memtotal_mb'] }} MB</li>
+        <li><strong>First Disk:</strong> {{ ansible_facts['devices'].keys() | first if ansible_facts['devices'] is defined else 'N/A' }}</li>
+    </ul>
+</body>
+</html>
