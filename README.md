@@ -130,6 +130,25 @@
 ```
 Поле для вставки кода...
 ....
+---
+- name: Модифицируйте плейбук
+  hosts: all
+  become: true
+  vars:
+    custom_motd: |
+      ====================================================
+      Welcome to managed server!
+      Hostname: {{ ansible_facts['hostname'] }}
+      IP Address: {{ ansible_facts['default_ipv4']['address'] }}
+      
+      Have a great day, System Administrator!
+      ====================================================
+  tasks:
+    - name: Изменение приветствия системы (motd)
+      ansible.builtin.copy:
+        content: "{{ custom_motd }}"
+        dest: /etc/motd
+        mode: '0644'
 ....
 ....
 ....
@@ -137,6 +156,8 @@
 
 `При необходимости прикрепитe сюда скриншоты
 ![Название скриншота 2](ссылка на скриншот 2)`
+![task4](https://github.com/tsitovich/7-1-ansible-hw/blob/main/img/task4.png)
+![task4-1](https://github.com/tsitovich/7-1-ansible-hw/blob/main/img/task4_1.png)
 
 
 ---
