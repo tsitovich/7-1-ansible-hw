@@ -41,20 +41,40 @@
   hosts: all
   become: true
   tasks:
+    - name: Установка утилит для распаковки
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - tar
+        - gzip
+
+    - name: Создать системного пользователя kafka
+      ansible.builtin.user:
+        name: kafka
+        system: true
+        create_home: false
+        shell: /usr/sbin/nologin
 
     - name: Создание папки для распаковки архива
       ansible.builtin.file:
         path: /opt/kafka
         state: directory
-        mode: '0755'
+        mode: "0755"
 
     - name: Скачивание и распаковка архива Kafka
       ansible.builtin.unarchive:
-        src: https://apache.org
+        src: https://archive.apache.org/dist/kafka/3.7.1/kafka-3.7.1-src.tgz
         dest: /opt/kafka
         remote_src: true
-        creates: /opt/kafka/kafka_2.13-3.6.0
-        
+        creates: "/opt/kafka/bin/kafka-server-start.sh"
+
+    - name: Установить владельца файлов Kafka
+      ansible.builtin.file:
+        path: /opt/kafka
+        owner: kafka
+        group: kafka
+        recurse: true        
 ....
 ....
 ....
@@ -62,7 +82,7 @@
 
 `При необходимости прикрепитe сюда скриншоты
 ![task1](https://github.com/tsitovich/7-1-ansible-hw/blob/main/img/task1.png)`
-
+![task1](https://github.com/tsitovich/7-1-ansible-hw/blob/main/img/task1.png)
 
 
 ---
