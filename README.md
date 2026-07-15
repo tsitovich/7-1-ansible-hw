@@ -1,4 +1,4 @@
-# Домашнее задание к занятию "`Название занятия`" - `Фамилия и имя студента`
+# Домашнее задание к занятию "Ansible. 2" - `Tsitovich Vladimir`
 
 
 ### Инструкция по выполнению домашнего задания
@@ -36,13 +36,33 @@
 ```
 Поле для вставки кода...
 ....
+---
+- name: Скачивание и распаковка архива Apache Kafka
+  hosts: all
+  become: true
+  tasks:
+
+    - name: Создание папки для распаковки архива
+      ansible.builtin.file:
+        path: /opt/kafka
+        state: directory
+        mode: '0755'
+
+    - name: Скачивание и распаковка архива Kafka
+      ansible.builtin.unarchive:
+        src: https://apache.org
+        dest: /opt/kafka
+        remote_src: true
+        creates: /opt/kafka/kafka_2.13-3.6.0
+        
 ....
 ....
 ....
 ```
 
 `При необходимости прикрепитe сюда скриншоты
-![Название скриншота 1](ссылка на скриншот 1)`
+![task1](https://github.com/tsitovich/7-1-ansible-hw/blob/main/img/task1.png)`
+
 
 
 ---

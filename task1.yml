@@ -1,0 +1,39 @@
+---
+- name: Скачивание и распаковка архива Apache Kafka
+  hosts: all
+  become: true
+  tasks:
+    - name: Установка утилит для распаковки
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - tar
+        - gzip
+
+    - name: Создать системного пользователя kafka
+      ansible.builtin.user:
+        name: kafka
+        system: true
+        create_home: false
+        shell: /usr/sbin/nologin
+
+    - name: Создание папки для распаковки архива
+      ansible.builtin.file:
+        path: /opt/kafka
+        state: directory
+        mode: "0755"
+
+    - name: Скачивание и распаковка архива Kafka
+      ansible.builtin.unarchive:
+        src: https://archive.apache.org/dist/kafka/3.7.1/kafka-3.7.1-src.tgz
+        dest: /opt/kafka
+        remote_src: true
+        creates: "/opt/kafka/bin/kafka-server-start.sh"
+
+    - name: Установить владельца файлов Kafka
+      ansible.builtin.file:
+        path: /opt/kafka
+        owner: kafka
+        group: kafka
+        recurse: true
