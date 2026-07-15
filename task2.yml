@@ -1,0 +1,15 @@
+---
+- name: пакет tuned
+  hosts: all
+  become: true
+  tasks:
+    - name: Установка пакета tuned из репозитория
+      ansible.builtin.package:
+        name: tuned
+        state: present
+
+    - name: Запуск tuned и добавление в автозагрузку
+      ansible.builtin.systemd_service:
+        name: tuned
+        state: started
+        enabled: true

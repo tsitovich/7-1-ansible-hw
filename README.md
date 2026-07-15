@@ -75,15 +75,44 @@
         owner: kafka
         group: kafka
         recurse: true        
+....---
+- name: пакет tuned
+  hosts: all
+  become: true
+  tasks:
+    - name: Установка пакета tuned из репозитория
+      ansible.builtin.package:
+        name: tuned
+        state: present
+
+    - name: Запуск tuned и добавление в автозагрузку
+      ansible.builtin.systemd_service:
+        name: tuned
+        state: started
+        enabled: true
+
 ....
-....
+---
+- name: Изменить приветствие системы
+  hosts: all
+  become: true
+  vars:
+    custom_motd: "Welcome to Vladimir's managed server! Managed by Ansible.\n"
+  tasks:
+    - name: Изменение приветствия системы (motd)
+      ansible.builtin.copy:
+        content: "{{ custom_motd }}"
+        dest: /etc/motd
+        mode: '0644'
 ....
 ```
 
 `При необходимости прикрепитe сюда скриншоты
 ![task1](https://github.com/tsitovich/7-1-ansible-hw/blob/main/img/task1.png)`
 ![task1](https://github.com/tsitovich/7-1-ansible-hw/blob/main/img/task1.png)
-
+![task2](https://github.com/tsitovich/7-1-ansible-hw/blob/main/img/task2.png)
+![task3](https://github.com/tsitovich/7-1-ansible-hw/blob/main/img/task3.png)
+![task3-1](https://github.com/tsitovich/7-1-ansible-hw/blob/main/img/task3_1.png)
 
 ---
 

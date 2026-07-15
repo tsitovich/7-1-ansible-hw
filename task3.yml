@@ -1,0 +1,12 @@
+---
+- name: Изменить приветствие системы
+  hosts: all
+  become: true
+  vars:
+    custom_motd: "Welcome to Vladimir's managed server! Managed by Ansible.\n"
+  tasks:
+    - name: Изменение приветствия системы (motd)
+      ansible.builtin.copy:
+        content: "{{ custom_motd }}"
+        dest: /etc/motd
+        mode: '0644'
